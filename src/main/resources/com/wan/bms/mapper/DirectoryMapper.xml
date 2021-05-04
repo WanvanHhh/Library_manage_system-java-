@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wan.bms.mapper.DirectoryMapper">
+  <resultMap id="BaseResultMap" type="com.wan.bms.domain.Directory">
+    <id column="id" property="id" />
+    <result column="name"  property="name" />
+    <result column="describes"  property="describes" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, `name`, describes
+  </sql>
+
+  <select id="selectOne" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from directory
+    where id = #{id}
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from directory
+    limit #{start}, #{pageSize}
+  </select>
+
+   <select id="selectCount" parameterType="java.lang.Long" resultType="java.lang.Long">
+    select count(*)
+    from directory
+  </select>
+
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from directory
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.wan.bms.domain.Directory" useGeneratedKeys="true">
+    insert into directory (`name`, describes)
+    values (#{name}, #{describes})
+  </insert>
+
+  <update id="update" parameterType="com.wan.bms.domain.Directory">
+    update directory
+    set `name` = #{name},
+      describes = #{describes}
+    where id = #{id}
+  </update>
+
+</mapper>

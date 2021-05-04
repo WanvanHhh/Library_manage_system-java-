@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wan.bms.mapper.CommentsMapper">
+  <resultMap id="BaseResultMap" type="com.wan.bms.domain.Comments">
+    <id column="id" property="id" />
+    <result column="bookId" property="bookid" />
+    <result column="username" property="username" />
+    <result column="comments" property="comments" />
+    <result column="date" property="date" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, bookId, username, comments, `date`
+  </sql>
+
+  <select id="selectOne" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from comments
+    where id = #{id}
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from comments
+    where bookId=#{bookId}
+    order by date desc
+    limit #{start},#{pageSize}
+  </select>
+
+   <select id="selectCount" parameterType="java.lang.Long" resultType="java.lang.Long">
+    select  count(*)
+    from comments
+    where bookId=#{bookId}
+  </select>
+
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from comments
+    where id = #{id}
+  </delete>
+
+<!--  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.wan.bms.domain.Comments" useGeneratedKeys="true">-->
+<!--    &lt;!&ndash;@mbg.generated&ndash;&gt;-->
+<!--    insert into comments (bookId, username, comments, -->
+<!--      `date`)-->
+<!--    values (#{bookid,jdbcType=BIGINT}, #{username,jdbcType=BIGINT}, #{comments,jdbcType=VARCHAR}, -->
+<!--      #{date,jdbcType=TIMESTAMP})-->
+<!--  </insert>-->
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.wan.bms.domain.Comments" useGeneratedKeys="true">
+    insert into comments
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="bookid != null">
+        bookId,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="comments != null">
+        comments,
+      </if>
+      <if test="date != null">
+        `date`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="bookid != null">
+        #{bookid},
+      </if>
+      <if test="username != null">
+        #{username},
+      </if>
+      <if test="comments != null">
+        #{comments},
+      </if>
+      <if test="date != null">
+        #{date},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="com.wan.bms.domain.Comments">
+    update comments
+    <set>
+      <if test="bookid != null">
+        bookId = #{bookid},
+      </if>
+      <if test="username != null">
+        username = #{username},
+      </if>
+      <if test="comments != null">
+        comments = #{comments},
+      </if>
+      <if test="date != null">
+        `date` = #{date},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+
+</mapper>

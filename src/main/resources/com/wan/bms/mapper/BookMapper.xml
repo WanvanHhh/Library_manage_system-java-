@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wan.bms.mapper.BookMapper">
+  <resultMap id="BaseResultMap" type="com.wan.bms.domain.Book">
+    <id column="id" property="id" />
+    <result column="sn" property="sn" />
+    <result column="name" property="name" />
+    <result column="author" property="author" />
+    <result column="price" property="price" />
+    <result column="dirId" property="dirid" />
+    <result column="dirId" property="directory.id"/>
+    <result column="d_name" property="directory.name" />
+    <result column="d_describes" property="directory.describes" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sn, `name`, author, price, dirId
+  </sql>
+
+  <select id="selectOne" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from book
+    where id = #{id}
+  </select>
+<!--模糊查询，类型查询条件语句-->
+  <sql id="Conditions">
+    from book as b inner join directory as d on b.dirid = d.id
+    <where>
+        <if test="keyword != null and keyword != ''">
+            and (b.name like concat('%',#{keyword},'%') or b.author like concat('%',#{keyword},'%'))
+        </if>
+        <if test="dirid != null and dirid != ''">
+            and b.dirid = #{dirid}
+        </if>
+    </where>
+  </sql>
+<!--分页、模糊查询、类型查询完整sql语句-->
+  <select id="selectList" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    b.id, sn, b.`name`, author, price, dirId ,d.name as d_name,d.describes as d_describes
+    <include refid="Conditions"></include>
+    limit #{start},#{pageSize}
+  </select>
+<!--查询符合条件的数据总条数-->
+  <select id="selectCount" resultType="java.lang.Long">
+    select count(*) as count
+    <include refid="Conditions"></include>
+  </select>
+
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from book
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.wan.bms.domain.Book" useGeneratedKeys="true">
+    insert into book (sn, `name`, author,
+      price, dirId)
+    values (#{sn}, #{name}, #{author},
+      #{price}, #{dirid})
+  </insert>
+
+  <update id="update" parameterType="com.wan.bms.domain.Book">
+    update book
+    set sn = #{sn},
+      `name` = #{name},
+      author = #{author},
+      price = #{price},
+      dirId = #{dirid}
+    where id = #{id}
+  </update>
+
+
+</mapper>

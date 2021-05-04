@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <properties resource="db.properties"/>
+    <typeAliases>
+        <package name="com.wan.bms.domain"/>
+    </typeAliases>
+    <environments default="dev">
+        <environment id="dev">
+            <!--此处如果配置成注释代码，会导致没有事务回滚和提交功能。踩坑-->
+<!--            <transactionManager type="MANAGED">-->
+<!--                <property name="closeConnection" value="false"/>-->
+<!--            </transactionManager>-->
+            <transactionManager type="JDBC"></transactionManager>
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driverClassName}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    
+    <mappers>
+        <package name="com.wan.bms.mapper"/>
+    </mappers>
+</configuration>
